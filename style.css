@@ -23,29 +23,29 @@
 }
 
 :root {
-    /* Monochrome palette — black background, white text, shades of grey.
+    /* Monochrome palette — cream background, black text, shades of grey.
        Original colour names are kept so the rest of the stylesheet doesn't
-       need to be renamed: --gold is now the primary accent (white), the
-       "green" / "blue" variables are repurposed as mid-greys, etc. */
-    --gold: #ffffff;
-    --silver: #c0c0c0;
+       need renaming: --gold is the primary accent (now black), the
+       "green" / "blue" vars are repurposed as mid-greys, etc. */
+    --gold: #000000;
+    --silver: #555555;
     --bronze: #808080;
-    --worst: #4a4a4a;
-    --green-pitch: #3a3a3a;
-    --green-dark: #1a1a1a;
-    --green-light: #888888;
-    --blue-sky: #555555;
-    --red-card: #b0b0b0;
-    --bg-dark: #000000;
-    --bg-card: #161616;
-    --bg-card-hover: #222222;
-    --text-primary: #ffffff;
-    --text-secondary: #d0d0d0;
-    --text-muted: #888888;
-    --alive: #ffffff;
-    --eliminated: #555555;
-    --unknown: #777777;
-    --kitty: #888888;
+    --worst: #b0b0b0;
+    --green-pitch: #d8d4cb;
+    --green-dark: #e8e3d7;
+    --green-light: #707070;
+    --blue-sky: #a0a0a0;
+    --red-card: #4a4a4a;
+    --bg-dark: #f7f4ef;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f0ece3;
+    --text-primary: #000000;
+    --text-secondary: #303030;
+    --text-muted: #707070;
+    --alive: #000000;
+    --eliminated: #b0b0b0;
+    --unknown: #909090;
+    --kitty: #707070;
 
     /* Quasimoda for headings/display, Times New Roman for body. */
     --font-display: 'Quasimoda', 'Mulish', 'Helvetica Neue', sans-serif;
@@ -98,8 +98,8 @@ h1, h2, h3 {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08) 0%, transparent 50%),
-                radial-gradient(circle at 70% 60%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    background: radial-gradient(circle at 30% 40%, rgba(0,0,0,0.03) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(0,0,0,0.04) 0%, transparent 50%);
     animation: shimmer 8s ease-in-out infinite;
 }
 
@@ -126,7 +126,6 @@ h1, h2, h3 {
 .hero h1 {
     font-size: clamp(2.5rem, 8vw, 5rem);
     color: var(--text-primary);
-    text-shadow: 0 2px 6px rgba(0,0,0,0.6);
     line-height: 1.1;
 }
 
@@ -161,24 +160,24 @@ h1, h2, h3 {
 }
 
 .prize.gold {
-    background: linear-gradient(135deg, #ffffff, #d8d8d8);
-    color: #0a0a0a;
+    background: linear-gradient(135deg, #1a1a1a, #404040);
+    color: #ffffff;
 }
 
 .prize.silver {
-    background: linear-gradient(135deg, #c8c8c8, #909090);
-    color: #0a0a0a;
+    background: linear-gradient(135deg, #555555, #808080);
+    color: #ffffff;
 }
 
 .prize.bronze {
-    background: linear-gradient(135deg, #808080, #5a5a5a);
-    color: #ffffff;
+    background: linear-gradient(135deg, #a0a0a0, #c0c0c0);
+    color: #1a1a1a;
 }
 
 .prize.worst {
-    background: linear-gradient(135deg, #3a3a3a, #1a1a1a);
-    color: #ffffff;
-    border: 1px solid rgba(255,255,255,0.15);
+    background: linear-gradient(135deg, #e0ddd3, #f0ece3);
+    color: #1a1a1a;
+    border: 1px solid rgba(0,0,0,0.15);
 }
 
 .cost-line {
@@ -195,7 +194,7 @@ h1, h2, h3 {
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 2px solid rgba(255,255,255,0.1);
+    border-bottom: 2px solid rgba(0,0,0,0.1);
 }
 
 .tab {
@@ -278,15 +277,15 @@ h1, h2, h3 {
 }
 
 .status-badge.pending {
-    background: rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.06);
     color: var(--text-secondary);
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(0,0,0,0.2);
 }
 
 .status-badge.complete {
-    background: rgba(255,255,255,0.18);
+    background: rgba(0,0,0,0.12);
     color: var(--text-primary);
-    border: 1px solid rgba(255,255,255,0.35);
+    border: 1px solid rgba(0,0,0,0.35);
 }
 
 /* ---- Spots badge (hero corner) ---- */
@@ -294,7 +293,7 @@ h1, h2, h3 {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: rgba(0,0,0,0.35);
+    background: rgba(255,255,255,0.7);
     border: 2px solid var(--gold);
     border-radius: 14px;
     padding: 0.5rem 0.9rem;
@@ -336,7 +335,7 @@ h1, h2, h3 {
     background: var(--bg-card);
     border-radius: 16px;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(0,0,0,0.08);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -357,7 +356,7 @@ h1, h2, h3 {
     display: flex;
     align-items: center;
     padding: 0.6rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
     transition: background 0.2s;
 }
 
@@ -428,7 +427,7 @@ h1, h2, h3 {
 
 .stage-btn {
     background: var(--bg-card);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
     color: var(--text-secondary);
     padding: 0.5rem 1rem;
     border-radius: 8px;
@@ -445,9 +444,9 @@ h1, h2, h3 {
 }
 
 .stage-btn.active {
-    background: var(--green-pitch);
-    color: white;
-    border-color: var(--green-light);
+    background: var(--text-primary);
+    color: var(--bg-card);
+    border-color: var(--text-primary);
 }
 
 .bracket-view {
@@ -462,7 +461,7 @@ h1, h2, h3 {
     padding: 0.75rem 1rem;
     background: var(--bg-card);
     border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(0,0,0,0.08);
     transition: all 0.3s;
     gap: 0.75rem;
 }
@@ -503,7 +502,7 @@ h1, h2, h3 {
     font-size: 0.75rem;
     color: var(--text-muted);
     padding: 0.2rem 0.6rem;
-    background: rgba(255,255,255,0.05);
+    background: rgba(0,0,0,0.05);
     border-radius: 4px;
 }
 
@@ -515,7 +514,7 @@ h1, h2, h3 {
     text-align: center;
     max-width: 500px;
     margin: 0 auto 2rem;
-    border: 2px solid rgba(255,255,255,0.2);
+    border: 2px solid rgba(0,0,0,0.15);
 }
 
 .payment-icon {
@@ -530,7 +529,7 @@ h1, h2, h3 {
 }
 
 .bank-details {
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.04);
     border-radius: 12px;
     padding: 1.25rem;
     margin-bottom: 1rem;
@@ -540,7 +539,7 @@ h1, h2, h3 {
     display: flex;
     justify-content: space-between;
     padding: 0.4rem 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
 .detail-row:last-child {
@@ -596,23 +595,24 @@ h1, h2, h3 {
 }
 
 .pot-bar.gold {
-    background: linear-gradient(90deg, #ffffff, #d8d8d8);
-    color: #0a0a0a;
+    background: linear-gradient(90deg, #1a1a1a, #404040);
+    color: #ffffff;
 }
 
 .pot-bar.silver {
-    background: linear-gradient(90deg, #c8c8c8, #909090);
-    color: #0a0a0a;
+    background: linear-gradient(90deg, #555555, #808080);
+    color: #ffffff;
 }
 
 .pot-bar.bronze {
-    background: linear-gradient(90deg, #808080, #5a5a5a);
-    color: #ffffff;
+    background: linear-gradient(90deg, #a0a0a0, #c0c0c0);
+    color: #1a1a1a;
 }
 
 .pot-bar.worst {
-    background: linear-gradient(90deg, #3a3a3a, #1a1a1a);
-    color: #ffffff;
+    background: linear-gradient(90deg, #e0ddd3, #f0ece3);
+    color: #1a1a1a;
+    border: 1px solid rgba(0,0,0,0.12);
 }
 
 .pot-bar.kitty {
@@ -623,8 +623,8 @@ h1, h2, h3 {
 /* ---- Admin ---- */
 .admin-panel {
     margin-top: 2rem;
-    background: rgba(255,255,255,0.04);
-    border: 2px dashed rgba(255,255,255,0.25);
+    background: rgba(0,0,0,0.03);
+    border: 2px dashed rgba(0,0,0,0.2);
     border-radius: 16px;
     padding: 1.5rem;
 }
@@ -645,9 +645,9 @@ h1, h2, h3 {
 .admin-controls textarea {
     width: 100%;
     min-height: 120px;
-    background: var(--bg-dark);
+    background: var(--bg-card);
     color: var(--text-primary);
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(0,0,0,0.15);
     border-radius: 8px;
     padding: 0.75rem;
     font-family: var(--font-body);
@@ -667,35 +667,35 @@ h1, h2, h3 {
 }
 
 .btn-draw {
-    background: linear-gradient(135deg, var(--green-pitch), var(--green-light));
-    color: white;
+    background: linear-gradient(135deg, #1a1a1a, #404040);
+    color: #ffffff;
 }
 
 .btn-draw:hover { transform: scale(1.05); }
 
 .btn-clear {
-    background: var(--red-card);
-    color: white;
+    background: #6a6a6a;
+    color: #ffffff;
 }
 
 .btn-export, .btn-import {
-    background: var(--blue-sky);
-    color: white;
+    background: #555555;
+    color: #ffffff;
 }
 
 .btn-eliminate {
-    background: var(--red-card);
-    color: white;
+    background: #6a6a6a;
+    color: #ffffff;
 }
 
 .btn-reinstate {
-    background: var(--green-light);
-    color: white;
+    background: #1a1a1a;
+    color: #ffffff;
 }
 
 .btn-advance {
-    background: var(--blue-sky);
-    color: white;
+    background: #555555;
+    color: #ffffff;
 }
 
 .result-controls {
@@ -706,9 +706,9 @@ h1, h2, h3 {
 }
 
 .result-controls select {
-    background: var(--bg-dark);
+    background: var(--bg-card);
     color: var(--text-primary);
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(0,0,0,0.15);
     border-radius: 8px;
     padding: 0.5rem;
     font-family: var(--font-body);
@@ -731,7 +731,7 @@ h1, h2, h3 {
 }
 
 .slot-name, .slot-team {
-    background: var(--bg-dark);
+    background: var(--bg-card);
     padding: 0.75rem 1.5rem;
     border-radius: 10px;
     min-width: 150px;
@@ -777,7 +777,7 @@ footer {
     text-align: center;
     padding: 2rem 1rem;
     color: var(--text-muted);
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(0,0,0,0.08);
 }
 
 footer .small {
@@ -1165,7 +1165,7 @@ footer .small {
 }
 
 .fx-side.is-clickable:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.06);
 }
 
 .fx-side.is-clickable:hover .fx-team-name:not(.eliminated) {
@@ -1220,11 +1220,11 @@ footer .small {
     color: var(--gold);
     margin: 1.5rem 0 0.6rem;
     padding-bottom: 0.3rem;
-    border-bottom: 2px solid rgba(255, 215, 0, 0.25);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
 }
 .fx-match {
     background: var(--bg-card);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-left: 4px solid var(--unknown);
     border-radius: 10px;
     padding: 0.6rem 0.85rem;
@@ -1269,7 +1269,7 @@ footer .small {
 .fx-owner {
     font-size: 0.72rem;
     color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.05);
     padding: 0.05rem 0.4rem;
     border-radius: 999px;
     flex-shrink: 0;
