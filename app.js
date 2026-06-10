@@ -197,7 +197,8 @@ function getStageName(stage) {
         final: "Final",
         winner: "WINNER!"
     };
-    return names[stage] || stage;
+    const safeStage = normalizeStage(stage);
+    return names[safeStage];
 }
 
 // ---- Fixtures / internal calendar ----
@@ -523,7 +524,7 @@ function reinstateTeam() {
 
 function advanceTeam() {
     const name = document.getElementById("set-stage-team").value;
-    const stage = document.getElementById("set-stage-to").value;
+    const stage = normalizeStage(document.getElementById("set-stage-to").value);
     if (!name) return;
     const previousStage = getStage(name);
     setOverride(name, { stage, eliminated: false });
@@ -664,6 +665,10 @@ const STAGE_PROGRESS = {
     final: 5,
     winner: 6
 };
+
+function normalizeStage(stage) {
+    return Object.prototype.hasOwnProperty.call(STAGE_PROGRESS, stage) ? stage : "groups";
+}
 
 function playAdvanceAnimation(team, fromStage, toStage, opts = {}) {
     if (!team) return Promise.resolve();
