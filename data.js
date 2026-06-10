@@ -79,11 +79,72 @@ const WORLD_CUP_DATA = {
 };
 
 // How many of the 48 spots have been claimed
-const SPOTS_TAKEN = 0;
+const SPOTS_TAKEN = 48;
 
 // Draw results — populate once Megg has the list of names.
 // Format: { "Team Name": "Owner Name", ... }
-const DEFAULT_ASSIGNMENTS = {};
+const DEFAULT_ASSIGNMENTS = {
+    // Group A
+    "Mexico": "Clare Hayward",
+    "South Africa": "Simon Timms",
+    "South Korea": "Hilary Nicholls",
+    "Czechia": "Jordan B",
+    // Group B
+    "Canada": "Robyn Stone",
+    "Bosnia and Herzegovina": "Amanda Carrick",
+    "Qatar": "Cara Lennie",
+    "Switzerland": "Fiona Fletcher",
+    // Group C
+    "Brazil": "Carrie Still",
+    "Morocco": "Leah Hazleton",
+    "Haiti": "Millie Bedini",
+    "Scotland": "Ruth Davies",
+    // Group D
+    "United States": "Andy O Leary",
+    "Paraguay": "Caroline C",
+    "Australia": "Emma Stone",
+    "Türkiye": "Eve l",
+    // Group E
+    "Germany": "Roxi Johnson",
+    "Curaçao": "Charles Mulenga",
+    "Ivory Coast": "Mike Long",
+    "Ecuador": "Eve L",
+    // Group F
+    "Netherlands": "Dawson Rogers",
+    "Japan": "Katie",
+    "Sweden": "Rebecca Smith",
+    "Tunisia": "Kate Tapper",
+    // Group G
+    "Belgium": "Georgia Thomas",
+    "Egypt": "Amy Harrison",
+    "IR Iran": "Laura Fleming",
+    "New Zealand": "Michelle Ramsay",
+    // Group H
+    "Spain": "Geoff",
+    "Cape Verde": "Ant sturgess",
+    "Saudi Arabia": "Eva Bagy",
+    "Uruguay": "Lydia Campbell",
+    // Group I
+    "France": "Lizzie Singh",
+    "Senegal": "Suzi Black",
+    "Iraq": "Alice Carroll",
+    "Norway": "Lucy Halpin",
+    // Group J
+    "Argentina": "Laura Nash",
+    "Algeria": "Faye Collett",
+    "Austria": "Rachel Cox",
+    "Jordan": "Chloe Y",
+    // Group K
+    "Portugal": "Suh M",
+    "DR Congo": "Maddy T",
+    "Uzbekistan": "Amanda Carrick 2",
+    "Colombia": "Rachel D",
+    // Group L
+    "England": "Megg",
+    "Croatia": "Megg 2",
+    "Ghana": "Hana Hitchman",
+    "Panama": "Clare Hayward 2"
+};
 
 // Schedule and results loaded from JSON files by loadLiveData()
 let SCHEDULE = [];
