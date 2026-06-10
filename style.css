@@ -129,6 +129,15 @@ h1, h2, h3 {
     line-height: 1.1;
 }
 
+.brand-logo {
+    display: block;
+    margin: 0.5rem auto 0.25rem;
+    width: 100%;
+    max-width: min(420px, 80vw);
+    height: auto;
+    mix-blend-mode: multiply;
+}
+
 .hero h2 {
     font-size: clamp(1.5rem, 5vw, 3rem);
     color: var(--text-primary);

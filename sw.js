@@ -6,7 +6,7 @@
 
 // Bump this version whenever the cached app shell changes so clients
 // pick up the new files instead of serving stale ones.
-const CACHE_VERSION = "joma-sweepstake-v1";
+const CACHE_VERSION = "joma-sweepstake-v2";
 const SHELL_CACHE = CACHE_VERSION + "-shell";
 const DATA_CACHE = CACHE_VERSION + "-data";
 
@@ -20,6 +20,7 @@ const SHELL_ASSETS = [
     "./manifest.webmanifest",
     "./icon.svg",
     "./icon-maskable.svg",
+    "./assets/joma-logo.jpg",
 ];
 
 // Live data files refreshed by the results workflow. Requested with a
