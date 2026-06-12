@@ -153,10 +153,13 @@ let LIVE = { eliminated: [], stages: {}, updatedAt: null };
 
 async function loadLiveData() {
     try {
+        // Cache-bust so every load hits the network: GitHub Pages serves these
+        // with a max-age, and a cached copy can hide fresh results for hours.
+        const v = Date.now();
         const [scheduleRes, resultsRes, trackerRes] = await Promise.all([
-            fetch("schedule.json").then(r => r.ok ? r.json() : null),
-            fetch("results.json").then(r => r.ok ? r.json() : null),
-            fetch("tracker-state.json").then(r => r.ok ? r.json() : null)
+            fetch(`schedule.json?v=${v}`).then(r => r.ok ? r.json() : null),
+            fetch(`results.json?v=${v}`).then(r => r.ok ? r.json() : null),
+            fetch(`tracker-state.json?v=${v}`).then(r => r.ok ? r.json() : null)
         ]);
         SCHEDULE = (scheduleRes && scheduleRes.matches) || [];
         RESULTS = (resultsRes && resultsRes.results) || {};
