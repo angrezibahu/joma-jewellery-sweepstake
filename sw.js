@@ -6,7 +6,7 @@
 
 // Bump this version whenever the cached app shell changes so clients
 // pick up the new files instead of serving stale ones.
-const CACHE_VERSION = "joma-sweepstake-v3";
+const CACHE_VERSION = "joma-sweepstake-v4";
 const SHELL_CACHE = CACHE_VERSION + "-shell";
 const DATA_CACHE = CACHE_VERSION + "-data";
 
@@ -61,9 +61,16 @@ self.addEventListener("fetch", (event) => {
         event.respondWith(
             fetch(req)
                 .then((res) => {
-                    const copy = res.clone();
-                    caches.open(DATA_CACHE).then((c) => c.put(url.pathname, copy));
-                    return res;
+                    // Only cache good responses; a cached 404/500 would be
+                    // served as the "offline" copy and mask real data.
+                    if (res && res.ok) {
+                        const copy = res.clone();
+                        caches.open(DATA_CACHE).then((c) => c.put(url.pathname, copy));
+                        return res;
+                    }
+                    return caches.open(DATA_CACHE)
+                        .then((c) => c.match(url.pathname))
+                        .then((cached) => cached || res);
                 })
                 .catch(() => caches.open(DATA_CACHE).then((c) => c.match(url.pathname)))
         );

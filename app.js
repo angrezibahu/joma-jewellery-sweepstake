@@ -172,10 +172,12 @@ function filterTeamsByStage(teams, viewStage) {
 
     if (viewStage === "groups") return teams;
 
+    // A team belongs in a stage view only if it actually reached that stage;
+    // eliminated teams still show (greyed out) at the stages they got to.
     return teams.filter(t => {
         const teamStage = getStage(t.name);
         const teamIdx = stageOrder.indexOf(teamStage);
-        return teamIdx >= viewIdx || isEliminated(t.name);
+        return teamIdx >= viewIdx;
     });
 }
 
@@ -277,7 +279,9 @@ function renderFixtures() {
 
             let middle, statusClass;
             if (finished && rec.homeScore != null) {
-                middle = `<span class="fx-score">${rec.homeScore} – ${rec.awayScore}</span>`;
+                // Coerce to numbers: results.json is machine-written from an
+                // external feed, so never trust it as HTML.
+                middle = `<span class="fx-score">${Number(rec.homeScore)} – ${Number(rec.awayScore)}</span>`;
                 statusClass = "done";
             } else if (due) {
                 middle = `<span class="fx-vs">v</span>`;
@@ -287,7 +291,9 @@ function renderFixtures() {
                 statusClass = "upcoming";
             }
 
-            const tag = m.stage === "group" ? `Group ${m.group}` : STAGE_LABEL_LONG[m.stage];
+            const tag = m.stage === "group"
+                ? `Group ${escapeHtml(m.group)}`
+                : (STAGE_LABEL_LONG[m.stage] || escapeHtml(m.stage));
             const note = finished ? "Full time"
                 : due ? "Awaiting result"
                 : `${m.ukTime} BST`;
@@ -370,10 +376,10 @@ function runDraw() {
         return;
     }
 
-    // Shuffle teams
+    // Shuffle teams (Fisher–Yates with a CSPRNG — there's money on this draw)
     const shuffled = [...teams];
     for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = randomInt(i + 1);
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 
@@ -549,7 +555,7 @@ function setupShare() {
             "Curated by Megg. Are you in? " +
             url
         );
-        window.open(`https://wa.me/?text=${text}`, "_blank");
+        window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
     });
 }
 
@@ -756,12 +762,30 @@ function playAdvanceAnimation(team, fromStage, toStage, opts = {}) {
 }
 
 // ---- Helpers ----
+// Unbiased random integer in [0, max) using the Web Crypto API,
+// with rejection sampling to avoid modulo bias.
+function randomInt(max) {
+    const limit = Math.floor(0x100000000 / max) * max;
+    const buf = new Uint32Array(1);
+    let x;
+    do {
+        crypto.getRandomValues(buf);
+        x = buf[0];
+    } while (x >= limit);
+    return x % max;
+}
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function escapeHtml(str) {
-    const div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
+    // Must escape quotes too: escaped values are interpolated into HTML
+    // attributes (e.g. data-team-click="...") as well as text content.
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
