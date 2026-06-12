@@ -125,7 +125,14 @@ def fetch_api_matches():
     out = []
     for m in data.get("matches", []):
         ft = (m.get("score") or {}).get("fullTime") or {}
-        if ft.get("home") is None or ft.get("away") is None:
+        # Scores must be plain non-negative ints: they're the only API-supplied
+        # values written to results.json (which the website renders), so don't
+        # let a hostile/garbled feed smuggle anything else through.
+        if not isinstance(ft.get("home"), int) or not isinstance(ft.get("away"), int):
+            continue
+        if isinstance(ft["home"], bool) or isinstance(ft["away"], bool):
+            continue
+        if ft["home"] < 0 or ft["away"] < 0:
             continue
         out.append({
             "home": (m.get("homeTeam") or {}).get("name"),
@@ -169,14 +176,13 @@ def apply_results(schedule, results):
         away = rec.get("away")
 
         # 1) manual override wins, e.g. "2-1" (orientation = home-away of this match)
-        if no in manual and isinstance(manual[no], str) and "-" in manual[no]:
-            try:
-                hs, as_ = (int(x) for x in manual[no].split("-", 1))
-                _set_result(rec, hs, as_)
+        if no in manual and isinstance(manual[no], str):
+            mm = re.fullmatch(r"\s*(\d+)\s*-\s*(\d+)\s*", manual[no])
+            if mm:
+                _set_result(rec, int(mm.group(1)), int(mm.group(2)))
                 changed += 1
                 continue
-            except ValueError:
-                print(f"Bad manual result for match {no}: {manual[no]!r}")
+            print(f"Bad manual result for match {no}: {manual[no]!r}")
 
         # 2) API (only once both teams are known, i.e. not still a placeholder)
         if home and away:
