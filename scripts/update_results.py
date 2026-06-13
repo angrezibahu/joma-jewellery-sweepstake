@@ -4,14 +4,18 @@ World Cup 2026 Sweepstake - automatic results updater.
 
 Runs on a schedule (GitHub Actions). For every match whose result is "due"
 (kickoff + 4h, i.e. ~2h play + 2h buffer for extra time / penalties) it pulls
-the final score from a live-scores API and writes it into results.json. It then
+the final score from a live-scores feed and writes it into results.json. It then
 derives the full tournament state - group standings, who qualifies, and the
 knockout bracket - into tracker-state.json, which the website reads to show
 eliminations and how far each team (and therefore each sweepstake entrant) got.
 
-Data source: football-data.org v4 (free tier). Set the FOOTBALL_DATA_API_TOKEN
-secret. A committed manual-results.json ({"<matchNo>": "2-1", ...}) always wins
-over the API, so results can be corrected or entered by hand if the feed is off.
+Data sources, in order of precedence (highest first):
+  1. manual-results.json ({"<matchNo>": "2-1", ...}) - hand-entered, always wins.
+  2. openfootball/worldcup.json - free, public-domain JSON on GitHub. No API key,
+     no rate limit. This is the default automatic feed, so results flow with zero
+     configuration. (https://github.com/openfootball/worldcup.json)
+  3. football-data.org v4 - optional supplement, used only if FOOTBALL_DATA_API_TOKEN
+     is set. Fills any match the openfootball feed hasn't published yet.
 
 The script is deliberately fail-soft: any network/parse problem is logged and the
 run still exits 0 with whatever it could update, so a flaky feed never turns the
@@ -32,8 +36,14 @@ STATE = os.path.join(ROOT, "tracker-state.json")
 MANUAL = os.path.join(ROOT, "manual-results.json")
 
 API_TOKEN = os.environ.get("FOOTBALL_DATA_API_TOKEN", "").strip()
-API_COMP = os.environ.get("FOOTBALL_DATA_COMPETITION", "WC").strip()
+API_COMP = (os.environ.get("FOOTBALL_DATA_COMPETITION") or "WC").strip()
 API_BASE = "https://api.football-data.org/v4"
+
+# Free, public-domain results feed (no token, no rate limit) - the default source.
+# Override via OPENFOOTBALL_URL if the path ever moves.
+OPENFOOTBALL_URL = (os.environ.get("OPENFOOTBALL_URL") or
+                    "https://raw.githubusercontent.com/openfootball/worldcup.json"
+                    "/master/2026/worldcup.json").strip()
 
 # Map provider team names onto the canonical names used in data.js / schedule.json.
 ALIASES = {
@@ -109,55 +119,129 @@ def canon(name, valid):
 # --------------------------------------------------------------------------
 # Fetching final scores
 # --------------------------------------------------------------------------
-def fetch_api_matches():
-    """Return list of finished matches from football-data.org, or [] on failure."""
-    if not API_TOKEN:
-        print("No FOOTBALL_DATA_API_TOKEN set - skipping API fetch.")
-        return []
-    url = f"{API_BASE}/competitions/{API_COMP}/matches?status=FINISHED"
-    req = urllib.request.Request(url, headers={"X-Auth-Token": API_TOKEN})
+def _http_json(url, headers=None):
+    """GET a URL and parse JSON, or return None on any network/parse failure."""
+    req = urllib.request.Request(url, headers=headers or {})
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
-            data = json.loads(resp.read().decode())
+            return json.loads(resp.read().decode())
     except (urllib.error.URLError, urllib.error.HTTPError, ValueError) as e:
-        print(f"API fetch failed ({e}); continuing with existing data.")
+        print(f"Fetch failed for {url} ({e}); continuing with existing data.")
+        return None
+
+
+def _clean_score(pair):
+    """Return (home, away) if pair is two plain non-negative ints, else None.
+
+    These are the only feed-supplied values written to results.json (which the
+    website renders), so a hostile/garbled feed can't smuggle anything else through.
+    """
+    if not (isinstance(pair, (list, tuple)) and len(pair) == 2):
+        return None
+    h, a = pair[0], pair[1]
+    if not isinstance(h, int) or not isinstance(a, int):
+        return None
+    if isinstance(h, bool) or isinstance(a, bool):
+        return None
+    if h < 0 or a < 0:
+        return None
+    return h, a
+
+
+def fetch_openfootball_matches():
+    """Return finished matches from openfootball/worldcup.json, or [] on failure.
+
+    No API token required. Score format is {"ft": [h, a], "et": [...], "p": [...]}.
+    We display the after-extra-time score when present, else full-time, and read
+    the penalty shootout (if any) to decide a knockout level after ET/90'."""
+    data = _http_json(OPENFOOTBALL_URL)
+    if not data:
+        return []
+    out = []
+    for m in data.get("matches", []):
+        score = m.get("score") or {}
+        final = _clean_score(score.get("et")) or _clean_score(score.get("ft"))
+        if final is None:
+            continue  # not played yet (or unparseable)
+        h, a = final
+        if h > a:
+            winner = "HOME_TEAM"
+        elif a > h:
+            winner = "AWAY_TEAM"
+        else:
+            pens = _clean_score(score.get("p"))
+            if pens and pens[0] != pens[1]:
+                winner = "HOME_TEAM" if pens[0] > pens[1] else "AWAY_TEAM"
+            else:
+                winner = "DRAW"  # genuine group-stage draw
+        out.append({
+            "home": m.get("team1"),
+            "away": m.get("team2"),
+            "homeScore": h,
+            "awayScore": a,
+            "winner": winner,
+            "utcDate": m.get("date"),
+        })
+    print(f"openfootball returned {len(out)} finished match(es).")
+    return out
+
+
+def fetch_api_matches():
+    """Return finished matches from football-data.org, or [] on failure.
+
+    Optional supplement: only runs if a token is set. The free tier may not
+    cover the World Cup, so this is a best-effort gap-filler, not the primary feed.
+    """
+    if not API_TOKEN:
+        print("No FOOTBALL_DATA_API_TOKEN set - skipping optional API fetch.")
+        return []
+    url = f"{API_BASE}/competitions/{API_COMP}/matches?status=FINISHED"
+    data = _http_json(url, headers={"X-Auth-Token": API_TOKEN})
+    if not data:
         return []
     out = []
     for m in data.get("matches", []):
         ft = (m.get("score") or {}).get("fullTime") or {}
-        # Scores must be plain non-negative ints: they're the only API-supplied
-        # values written to results.json (which the website renders), so don't
-        # let a hostile/garbled feed smuggle anything else through.
-        if not isinstance(ft.get("home"), int) or not isinstance(ft.get("away"), int):
-            continue
-        if isinstance(ft["home"], bool) or isinstance(ft["away"], bool):
-            continue
-        if ft["home"] < 0 or ft["away"] < 0:
+        final = _clean_score((ft.get("home"), ft.get("away")))
+        if final is None:
             continue
         out.append({
             "home": (m.get("homeTeam") or {}).get("name"),
             "away": (m.get("awayTeam") or {}).get("name"),
-            "homeScore": ft["home"],
-            "awayScore": ft["away"],
+            "homeScore": final[0],
+            "awayScore": final[1],
             "winner": (m.get("score") or {}).get("winner"),  # HOME_TEAM/AWAY_TEAM/DRAW
             "utcDate": m.get("utcDate"),
         })
-    print(f"API returned {len(out)} finished matches.")
+    print(f"API returned {len(out)} finished match(es).")
     return out
 
 
+def _index_by_pair(feed, valid, idx, override=True):
+    """Index feed matches by the frozenset of their two canonical team names.
+
+    With override=False, existing entries are kept (used so a supplemental feed
+    only fills gaps the primary feed left)."""
+    for a in feed:
+        h, w = canon(a["home"], valid), canon(a["away"], valid)
+        if not (h and w):
+            continue
+        key = frozenset((h, w))
+        if override or key not in idx:
+            idx[key] = a
+    return idx
+
+
 def apply_results(schedule, results):
-    """Fill results.json for any match now due, from manual file then the API."""
+    """Fill results.json for any due match: manual file, then openfootball, then API."""
     valid = {m["home"] for m in schedule if not m["homePlaceholder"]}
     valid |= {m["away"] for m in schedule if not m["awayPlaceholder"]}
 
-    api = fetch_api_matches()
-    # index API matches by frozenset of the two canonical team names
-    api_idx = {}
-    for a in api:
-        h, w = canon(a["home"], valid), canon(a["away"], valid)
-        if h and w:
-            api_idx[frozenset((h, w))] = a
+    # Primary feed: openfootball (free, no token). football-data.org only fills
+    # matches openfootball hasn't published yet, so it never overrides it.
+    feed_idx = {}
+    _index_by_pair(fetch_openfootball_matches(), valid, feed_idx)
+    _index_by_pair(fetch_api_matches(), valid, feed_idx, override=False)
 
     manual = load(MANUAL, {}) or {}
     now = now_utc()
@@ -184,9 +268,9 @@ def apply_results(schedule, results):
                 continue
             print(f"Bad manual result for match {no}: {manual[no]!r}")
 
-        # 2) API (only once both teams are known, i.e. not still a placeholder)
+        # 2) live feed (only once both teams are known, i.e. not still a placeholder)
         if home and away:
-            a = api_idx.get(frozenset((home, away)))
+            a = feed_idx.get(frozenset((home, away)))
             if a:
                 if canon(a["home"], valid) == home:
                     _set_result(rec, a["homeScore"], a["awayScore"], a.get("winner"))
@@ -419,16 +503,26 @@ def main():
     prev_state = load(STATE, {})
 
     changed = apply_results(schedule, results)
-    results["updatedAt"] = now_utc().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # Snapshot home/away for all fixtures before derive_state resolves KO placeholders.
+    pre_derive = {no: (rec.get("home"), rec.get("away"))
+                  for no, rec in results["results"].items()}
 
     # derive_state also fills concrete teams into knockout fixtures as earlier
     # rounds finish, so persist results.json after deriving to keep them.
     state = derive_state(schedule, results, prev_state)
-    dump(RESULTS, results)
-    dump(STATE, state)
 
-    print(f"Done. {changed} new result(s); "
-          f"{len(state['eliminated'])} team(s) eliminated.")
+    post_derive = {no: (rec.get("home"), rec.get("away"))
+                   for no, rec in results["results"].items()}
+    ko_changed = post_derive != pre_derive
+
+    if changed or ko_changed:
+        results["updatedAt"] = now_utc().strftime("%Y-%m-%dT%H:%M:%SZ")
+        dump(RESULTS, results)
+        dump(STATE, state)
+        print(f"Done. {changed} new result(s); {len(state['eliminated'])} team(s) eliminated.")
+    else:
+        print(f"No new results. {len(state['eliminated'])} team(s) eliminated.")
     return 0
 
 

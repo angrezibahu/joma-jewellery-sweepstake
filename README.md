@@ -48,11 +48,12 @@ Once the list of participants is ready:
 
 ## Automated results
 
-Match results auto-update via the `Update match results` GitHub Action,
-which calls football-data.org hourly during the tournament. To enable it
-you need to add a `FOOTBALL_DATA_API_TOKEN` repository secret (get a free
-token at https://www.football-data.org/). Without the secret, you can
-still update results by hand via the admin panel.
+Match results auto-update via the `Update results` GitHub Action, which
+runs hourly during the tournament. It reads scores from
+[openfootball/worldcup.json](https://github.com/openfootball/worldcup.json)
+— a free, public-domain feed that needs **no API key** — so it works with
+zero setup. You can always correct or pre-enter a score by hand in
+`manual-results.json` (it wins over the feed), or via the admin panel.
 
 See `RESULTS_AUTOMATION.md` for the full automation flow.
 
