@@ -32,7 +32,7 @@ STATE = os.path.join(ROOT, "tracker-state.json")
 MANUAL = os.path.join(ROOT, "manual-results.json")
 
 API_TOKEN = os.environ.get("FOOTBALL_DATA_API_TOKEN", "").strip()
-API_COMP = os.environ.get("FOOTBALL_DATA_COMPETITION", "WC").strip()
+API_COMP = (os.environ.get("FOOTBALL_DATA_COMPETITION") or "WC").strip()
 API_BASE = "https://api.football-data.org/v4"
 
 # Map provider team names onto the canonical names used in data.js / schedule.json.
@@ -419,16 +419,26 @@ def main():
     prev_state = load(STATE, {})
 
     changed = apply_results(schedule, results)
-    results["updatedAt"] = now_utc().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # Snapshot home/away for all fixtures before derive_state resolves KO placeholders.
+    pre_derive = {no: (rec.get("home"), rec.get("away"))
+                  for no, rec in results["results"].items()}
 
     # derive_state also fills concrete teams into knockout fixtures as earlier
     # rounds finish, so persist results.json after deriving to keep them.
     state = derive_state(schedule, results, prev_state)
-    dump(RESULTS, results)
-    dump(STATE, state)
 
-    print(f"Done. {changed} new result(s); "
-          f"{len(state['eliminated'])} team(s) eliminated.")
+    post_derive = {no: (rec.get("home"), rec.get("away"))
+                   for no, rec in results["results"].items()}
+    ko_changed = post_derive != pre_derive
+
+    if changed or ko_changed:
+        results["updatedAt"] = now_utc().strftime("%Y-%m-%dT%H:%M:%SZ")
+        dump(RESULTS, results)
+        dump(STATE, state)
+        print(f"Done. {changed} new result(s); {len(state['eliminated'])} team(s) eliminated.")
+    else:
+        print(f"No new results. {len(state['eliminated'])} team(s) eliminated.")
     return 0
 
 
