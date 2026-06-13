@@ -16,9 +16,10 @@ to the repo, so nobody has to sit at the admin panel during the tournament.
 
 ## The flow
 
-1. The workflow runs **hourly** through June 11–30 and July 1–19 (UTC cron).
+1. The workflow runs **hourly** through June 11–30 and July 1–21 (UTC cron).
 2. For every match whose `resultsDueUTC` has passed and isn't recorded yet, the
-   engine pulls the final score and writes it to `results.json`.
+   engine pulls the final score (from the openfootball feed by default — see
+   below) and writes it to `results.json`.
 3. It recomputes `tracker-state.json` (eliminations + stages + standings).
 4. If anything changed it commits to `main`, which triggers the existing GitHub
    Pages deploy — the live site updates on its own.
@@ -30,25 +31,31 @@ a wrong or late feed by hand at any time.
 
 ## Setup required (one-time)
 
-1. **Add a results data source.** The engine uses
-   [football-data.org](https://www.football-data.org/) (free tier). Get a free
-   API token and add it as a repository secret named **`FOOTBALL_DATA_API_TOKEN`**
-   (Settings → Secrets and variables → Actions → New repository secret).
-   - Optionally set `FOOTBALL_DATA_COMPETITION` (defaults to `WC`) if the World
-     Cup competition code differs on your plan.
-   - GitHub's runners have open internet, so the fetch works there even though it
-     can't be tested from a restricted dev environment.
-2. That's it. The workflow already has `contents: write` permission to commit
-   results back to `main`.
+**None.** Results come from
+[openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) — a
+free, public-domain JSON file on GitHub with **no API key and no rate limit**.
+The workflow already has `contents: write` permission to commit results back to
+`main`, so it works out of the box.
 
-> If you'd rather not use an API at all, you can skip the secret and instead enter
-> scores by hand in `manual-results.json` (see below) — everything else still
-> derives automatically.
+### Data sources, in order of precedence
+
+1. **`manual-results.json`** — hand-entered scores, always win (see below).
+2. **openfootball** — the default automatic feed. Override its URL with the
+   `OPENFOOTBALL_URL` env var if the path ever moves.
+3. **football-data.org** *(optional)* — used only as a gap-filler if you add a
+   `FOOTBALL_DATA_API_TOKEN` repository secret. It never overrides openfootball;
+   it just fills any match openfootball hasn't published yet. Optionally set
+   `FOOTBALL_DATA_COMPETITION` (defaults to `WC`) if the competition code differs
+   on your plan. Note the free tier may not cover the World Cup at all — this is
+   why openfootball is the primary feed.
+
+GitHub's runners have open internet, so fetches work there even though they can't
+be tested from a restricted dev environment.
 
 ## Manual overrides
 
-`manual-results.json` lets you hand-enter or correct a score. It **wins over the
-API**. Keys are the match number (string) from `schedule.json`; values are the
+`manual-results.json` lets you hand-enter or correct a score. It **wins over any
+feed**. Keys are the match number (string) from `schedule.json`; values are the
 score as `"home-away"` from the home team's perspective:
 
 ```json
@@ -58,9 +65,9 @@ score as `"home-away"` from the home team's perspective:
 }
 ```
 
-(For a knockout that finished level after 90 mins, the API's winner flag decides
-who progresses; for a hand-entered knockout score, enter the score that reflects
-the actual aggregate/decisive result.)
+(For a knockout that finished level after 90 mins, the feed's penalty/extra-time
+result decides who progresses; for a hand-entered knockout score, enter the score
+that reflects the actual decisive result.)
 
 ## A note on tiebreakers
 
