@@ -2,10 +2,12 @@ name: Update results
 
 on:
   schedule:
-    # Hourly through the tournament: 11-30 June and 1-21 July (UTC).
-    # Runs past the final (19 July, result due 23:00 UTC) so a single
-    # flaky run near the end can't permanently miss the last results.
+    # Every 30 minutes through the tournament: 11-30 June and 1-21 July (UTC).
+    # Two cron entries cover the :00 and :30 slots. GitHub's cron can lag,
+    # so running twice per hour halves the worst-case delay for new results.
+    - cron: "0 * 11-30 6 *"
     - cron: "30 * 11-30 6 *"
+    - cron: "0 * 1-21 7 *"
     - cron: "30 * 1-21 7 *"
   workflow_dispatch:
 
