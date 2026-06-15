@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-15T20:25:29Z",
+  "updatedAt": "2026-06-15T23:03:01Z",
   "results": {
     "1": {
       "match": 1,
@@ -177,11 +177,11 @@
       "away": "Egypt",
       "homeRef": "Belgium",
       "awayRef": "Egypt",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
+      "homeScore": 1,
+      "awayScore": 1,
+      "status": "FINISHED",
       "winner": null,
-      "finishedAt": null
+      "finishedAt": "2026-06-15T23:03:01Z"
     },
     "15": {
       "match": 15,
