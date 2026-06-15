@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-15T01:59:22Z",
+  "updatedAt": "2026-06-15T04:16:53Z",
   "results": {
     "1": {
       "match": 1,
@@ -138,11 +138,11 @@
       "away": "Ecuador",
       "homeRef": "Ivory Coast",
       "awayRef": "Ecuador",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "FINISHED",
+      "winner": "Ivory Coast",
+      "finishedAt": "2026-06-15T04:16:53Z"
     },
     "12": {
       "match": 12,

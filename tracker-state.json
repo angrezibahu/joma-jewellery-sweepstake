@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-15T01:59:22Z",
+  "updatedAt": "2026-06-15T04:16:53Z",
   "source": "auto",
   "eliminated": [],
   "stages": {
@@ -268,25 +268,25 @@
       },
       {
         "team": "Ivory Coast",
-        "played": 0,
-        "won": 0,
+        "played": 1,
+        "won": 1,
         "drawn": 0,
         "lost": 0,
-        "gf": 0,
+        "gf": 1,
         "ga": 0,
-        "gd": 0,
-        "pts": 0,
+        "gd": 1,
+        "pts": 3,
         "rank": 2
       },
       {
         "team": "Ecuador",
-        "played": 0,
+        "played": 1,
         "won": 0,
         "drawn": 0,
-        "lost": 0,
+        "lost": 1,
         "gf": 0,
-        "ga": 0,
-        "gd": 0,
+        "ga": 1,
+        "gd": -1,
         "pts": 0,
         "rank": 3
       },
