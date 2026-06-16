@@ -22,26 +22,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderFixtures();
     setupAdmin();
     setupTeamClicks();
+
+    // Fixtures is the default tab now the draw's done — open it anchored to today.
+    if (document.querySelector(".tab.active")?.dataset.tab === "fixtures") {
+        // Wait for layout so scrollIntoView lands on the right offset.
+        requestAnimationFrame(() => scrollFixturesToToday(false));
+    }
 });
 
 // Delegated click: anywhere a team name is rendered with [data-team-click],
 // tapping it replays the right animation for that team's current state.
 function setupTeamClicks() {
-    const handler = (e) => {
+    const activate = (el) => {
+        if (document.querySelector(".anim-overlay")) return;  // one at a time
+        // On the Tournament Tracker, show the team's full journey (matches +
+        // current standing). Elsewhere (e.g. fixtures) keep the quick animation.
+        if (el.closest("#bracket")) {
+            showTeamDetails(el.dataset.teamClick);
+        } else {
+            playTeamStatus(el.dataset.teamClick);
+        }
+    };
+    document.addEventListener("click", (e) => {
         const el = e.target.closest("[data-team-click]");
         if (!el) return;
-        if (document.querySelector(".anim-overlay")) return;  // one at a time
         e.preventDefault();
-        playTeamStatus(el.dataset.teamClick);
-    };
-    document.addEventListener("click", handler);
+        activate(el);
+    });
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Enter" && e.key !== " ") return;
         const el = e.target.closest("[data-team-click]");
         if (!el) return;
         e.preventDefault();
-        if (document.querySelector(".anim-overlay")) return;
-        playTeamStatus(el.dataset.teamClick);
+        activate(el);
     });
 }
 
@@ -54,6 +67,103 @@ function playTeamStatus(name) {
     }
     const stage = getStage(name);
     playAdvanceAnimation(team, "groups", stage, { review: true });
+}
+
+// Every match a team is involved in, in schedule order, with the result worked
+// out from their point of view. fixtureSide resolves knockout placeholders, so
+// this picks up games they reached beyond the group stage too.
+function teamMatches(name) {
+    const out = [];
+    for (const m of SCHEDULE) {
+        const home = fixtureSide(m, "home");
+        const away = fixtureSide(m, "away");
+        if (home.name !== name && away.name !== name) continue;
+        const isHome = home.name === name;
+        const opp = isHome ? away : home;
+        out.push({ m, isHome, oppName: opp.name });
+    }
+    return out.sort((a, b) => a.m.match - b.m.match);
+}
+
+// Tournament Tracker: a readable summary of where a team has got to —
+// who they've played, the scores, and where they stand now.
+function showTeamDetails(name) {
+    const team = findTeam(name);
+    if (!team) return;
+    const owner = state.assignments[name];
+    const eliminated = isEliminated(name);
+    const stage = getStage(name);
+
+    const statusText = eliminated
+        ? "Eliminated"
+        : stage === "winner" ? "Champions! 🏆" : `Still in it — ${getStageName(stage)}`;
+    const statusClass = eliminated ? "eliminated" : "alive";
+
+    const matches = teamMatches(name);
+    let rows = "";
+    for (const { m, isHome, oppName } of matches) {
+        const rec = RESULTS[String(m.match)] || {};
+        const finished = rec.status === "FINISHED" && rec.homeScore != null;
+        const d = new Date(m.ukDate + "T12:00:00Z");
+        const dateLabel = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+        const oppLabel = oppName
+            ? `${teamFlag(oppName)} ${escapeHtml(oppName)}`
+            : "TBC";
+        const tag = m.stage === "group"
+            ? `Group ${escapeHtml(m.group)}`
+            : (STAGE_LABEL_LONG[m.stage] || escapeHtml(m.stage));
+
+        let resultHtml, outcomeClass = "";
+        if (finished) {
+            const teamScore = Number(isHome ? rec.homeScore : rec.awayScore);
+            const oppScore = Number(isHome ? rec.awayScore : rec.homeScore);
+            outcomeClass = teamScore > oppScore ? "win" : teamScore < oppScore ? "loss" : "draw";
+            const tagWord = outcomeClass === "win" ? "Won" : outcomeClass === "loss" ? "Lost" : "Drew";
+            resultHtml = `<span class="td-score">${teamScore}–${oppScore}</span><span class="td-outcome ${outcomeClass}">${tagWord}</span>`;
+        } else {
+            resultHtml = `<span class="td-ko">${escapeHtml(m.ukTime)}</span>`;
+        }
+
+        rows += `
+            <div class="td-match ${outcomeClass || "upcoming"}">
+                <div class="td-match-top">
+                    <span class="td-tag">${tag}</span>
+                    <span class="td-date">${dateLabel}</span>
+                </div>
+                <div class="td-match-body">
+                    <span class="td-opp">${isHome ? "vs" : "at"} ${oppLabel}</span>
+                    <span class="td-result">${resultHtml}</span>
+                </div>
+            </div>`;
+    }
+    if (!rows) rows = `<div class="td-empty">No fixtures scheduled yet.</div>`;
+
+    const overlay = document.createElement("div");
+    overlay.className = "anim-overlay team-details";
+    overlay.innerHTML = `
+        <div class="td-card">
+            <button class="anim-close" aria-label="Close">&times;</button>
+            <div class="td-header">
+                <span class="td-flag">${team.flag}</span>
+                <div class="td-headtext">
+                    <div class="td-name">${escapeHtml(team.name)}</div>
+                    ${owner ? `<div class="td-owner">${escapeHtml(owner)}</div>` : ""}
+                </div>
+            </div>
+            <div class="td-status ${statusClass}">${statusText}</div>
+            <div class="td-journey-label">Their journey</div>
+            <div class="td-matches">${rows}</div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const close = () => overlay.remove();
+    overlay.querySelector(".anim-close").addEventListener("click", close);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
+    document.addEventListener("keydown", function onEsc(e) {
+        if (e.key === "Escape") { close(); document.removeEventListener("keydown", onEsc); }
+    });
+    requestAnimationFrame(() => overlay.classList.add("show"));
 }
 
 // ---- Effective team state: auto results (LIVE), with admin overrides on top ----
@@ -84,6 +194,7 @@ function setupTabs() {
             document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
             tab.classList.add("active");
             document.getElementById(tab.dataset.tab).classList.add("active");
+            if (tab.dataset.tab === "fixtures") scrollFixturesToToday(true);
         });
     });
 }
@@ -265,10 +376,15 @@ function renderFixtures() {
         (byDate[m.ukDate] = byDate[m.ukDate] || []).push(m);
     }
 
+    const today = todayUKDate();
     let html = "";
     for (const date of Object.keys(byDate).sort()) {
         const d = new Date(date + "T12:00:00Z");
-        html += `<div class="fx-day">${d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}</div>`;
+        const isToday = date === today;
+        html += `<div class="fx-day${isToday ? ' today' : ''}" id="fxday-${date}" data-date="${date}">
+            ${d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}
+            ${isToday ? '<span class="fx-today-pill">Today</span>' : ''}
+        </div>`;
         for (const m of byDate[date].sort((a, b) => a.match - b.match)) {
             const rec = RESULTS[String(m.match)] || {};
             const finished = rec.status === "FINISHED";
@@ -317,6 +433,26 @@ function renderFixtures() {
         }
     }
     view.innerHTML = html;
+}
+
+// Today's date as an ISO yyyy-mm-dd string in UK time, to match m.ukDate.
+function todayUKDate() {
+    // en-CA gives ISO-style yyyy-mm-dd; Europe/London keeps us aligned with ukDate.
+    return new Date().toLocaleDateString("en-CA", { timeZone: "Europe/London" });
+}
+
+// Jump the fixtures list to today (or the next day with matches, or — once the
+// tournament is over — the last day), so you don't have to scroll from June 11.
+function scrollFixturesToToday(smooth = false) {
+    const view = document.getElementById("fixtures-view");
+    if (!view) return;
+    const days = [...view.querySelectorAll(".fx-day")];
+    if (!days.length) return;
+
+    const today = todayUKDate();
+    // First day that is today or still to come; fall back to the very last day.
+    const target = days.find(el => el.dataset.date >= today) || days[days.length - 1];
+    target.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
 }
 
 // ---- Draw Status ----
