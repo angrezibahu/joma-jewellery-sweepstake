@@ -803,6 +803,84 @@ footer .small {
 }
 .anim-close:hover { background: rgba(255,255,255,0.2); }
 
+/* ---- Team details (Tournament Tracker) ---- */
+.anim-overlay.team-details { align-items: flex-start; padding: 4vh 1rem; overflow-y: auto; }
+.td-card {
+    position: relative;
+    width: min(480px, 94vw);
+    margin: auto;
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 1.5rem 1.25rem 1.25rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    transform: translateY(20px);
+    transition: transform 0.4s ease;
+}
+.anim-overlay.team-details.show .td-card { transform: translateY(0); }
+.td-card .anim-close { color: var(--text-primary); background: rgba(0, 0, 0, 0.06); }
+.td-card .anim-close:hover { background: rgba(0, 0, 0, 0.12); }
+.td-header { display: flex; align-items: center; gap: 0.75rem; padding-right: 2.5rem; }
+.td-flag { font-size: 2.4rem; line-height: 1; }
+.td-name { font-family: var(--font-display); font-size: 1.6rem; color: var(--text-primary); }
+.td-owner { font-size: 0.85rem; color: var(--text-muted); }
+.td-status {
+    display: inline-block;
+    margin: 0.85rem 0 0.5rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+}
+.td-status.alive { color: var(--bg-card); background: var(--alive); }
+.td-status.eliminated { color: var(--text-muted); background: rgba(0, 0, 0, 0.07); text-decoration: line-through; }
+.td-journey-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin: 0.75rem 0 0.5rem;
+}
+.td-matches { display: flex; flex-direction: column; gap: 0.4rem; }
+.td-match {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-left: 4px solid var(--unknown, #ddd);
+    border-radius: 10px;
+    padding: 0.5rem 0.7rem;
+}
+.td-match.win { border-left-color: var(--alive); }
+.td-match.loss { border-left-color: var(--eliminated); }
+.td-match.draw { border-left-color: var(--text-muted); }
+.td-match.upcoming { border-left-color: var(--blue-sky); }
+.td-match-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+.td-tag { font-weight: 700; color: var(--text-secondary); }
+.td-match-body { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+.td-opp { font-weight: 600; color: var(--text-primary); min-width: 0; }
+.td-result { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+.td-score { font-weight: 700; font-size: 1.05rem; color: var(--text-primary); white-space: nowrap; }
+.td-ko { font-weight: 700; color: var(--text-secondary); }
+.td-outcome {
+    font-size: 0.64rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.12rem 0.45rem;
+    border-radius: 999px;
+}
+.td-outcome.win { color: var(--bg-card); background: var(--alive); }
+.td-outcome.loss { color: var(--text-muted); background: rgba(0, 0, 0, 0.07); }
+.td-outcome.draw { color: var(--text-secondary); border: 1px solid rgba(0, 0, 0, 0.2); }
+.td-empty { color: var(--text-muted); font-size: 0.9rem; padding: 0.5rem 0; }
+
 .anim-stage {
     text-align: center;
     width: min(560px, 92vw);
@@ -1206,6 +1284,25 @@ footer .small {
     margin: 1.5rem 0 0.6rem;
     padding-bottom: 0.3rem;
     border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    /* Sticky tab bar sits at the top, so offset anchored scrolls clear of it. */
+    scroll-margin-top: 64px;
+}
+.fx-day.today {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-bottom-color: var(--gold);
+}
+.fx-today-pill {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--bg-card);
+    background: var(--gold);
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
 }
 .fx-match {
     background: var(--bg-card);
