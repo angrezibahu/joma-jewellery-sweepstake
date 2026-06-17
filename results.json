@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-16T23:06:22Z",
+  "updatedAt": "2026-06-17T02:00:43Z",
   "results": {
     "1": {
       "match": 1,
@@ -229,11 +229,11 @@
       "away": "Norway",
       "homeRef": "Iraq",
       "awayRef": "Norway",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 1,
+      "awayScore": 4,
+      "status": "FINISHED",
+      "winner": "Norway",
+      "finishedAt": "2026-06-17T02:00:43Z"
     },
     "19": {
       "match": 19,
