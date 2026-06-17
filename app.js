@@ -100,8 +100,18 @@ function showTeamDetails(name) {
     const statusClass = eliminated ? "eliminated" : "alive";
 
     const matches = teamMatches(name);
+
+    // The football for each match wears a halo coloured by the result. If the
+    // team is out, the last match they actually played is the one they went out
+    // on — that football gets a red cross through it.
+    let lastPlayedIdx = -1;
+    matches.forEach(({ m }, i) => {
+        const rec = RESULTS[String(m.match)] || {};
+        if (rec.status === "FINISHED" && rec.homeScore != null) lastPlayedIdx = i;
+    });
+
     let rows = "";
-    for (const { m, isHome, oppName } of matches) {
+    matches.forEach(({ m, isHome, oppName }, i) => {
         const rec = RESULTS[String(m.match)] || {};
         const finished = rec.status === "FINISHED" && rec.homeScore != null;
         const d = new Date(m.ukDate + "T12:00:00Z");
@@ -124,6 +134,11 @@ function showTeamDetails(name) {
             resultHtml = `<span class="td-ko">${escapeHtml(m.ukTime)}</span>`;
         }
 
+        // Halo: gold = won, red = lost, grey = draw, none = not played yet.
+        const haloClass = finished ? outcomeClass : "unplayed";
+        const knockedOut = eliminated && i === lastPlayedIdx;
+        const ballHtml = `<span class="td-ball ${haloClass}${knockedOut ? " knocked-out" : ""}" aria-hidden="true">⚽</span>`;
+
         rows += `
             <div class="td-match ${outcomeClass || "upcoming"}">
                 <div class="td-match-top">
@@ -131,11 +146,12 @@ function showTeamDetails(name) {
                     <span class="td-date">${dateLabel}</span>
                 </div>
                 <div class="td-match-body">
+                    ${ballHtml}
                     <span class="td-opp">${isHome ? "vs" : "at"} ${oppLabel}</span>
                     <span class="td-result">${resultHtml}</span>
                 </div>
             </div>`;
-    }
+    });
     if (!rows) rows = `<div class="td-empty">No fixtures scheduled yet.</div>`;
 
     const overlay = document.createElement("div");

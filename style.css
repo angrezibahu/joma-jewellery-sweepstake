@@ -864,7 +864,70 @@ footer .small {
 }
 .td-tag { font-weight: 700; color: var(--text-secondary); }
 .td-match-body { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
-.td-opp { font-weight: 600; color: var(--text-primary); min-width: 0; }
+.td-opp { font-weight: 600; color: var(--text-primary); min-width: 0; flex: 1; }
+
+/* Each match is a football wearing a halo coloured by the result:
+   gold = won, red = lost, grey = draw, no halo = not played yet. */
+.td-ball {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    line-height: 1;
+    border-radius: 50%;
+}
+.td-ball.win {
+    --halo: rgba(245, 184, 30, 0.95);
+    background: radial-gradient(circle, rgba(245, 184, 30, 0.55) 26%, transparent 72%);
+}
+.td-ball.loss {
+    --halo: rgba(224, 52, 42, 0.95);
+    background: radial-gradient(circle, rgba(224, 52, 42, 0.5) 26%, transparent 72%);
+}
+.td-ball.draw {
+    --halo: rgba(150, 150, 150, 0.85);
+    background: radial-gradient(circle, rgba(150, 150, 150, 0.45) 26%, transparent 72%);
+}
+.td-ball.win,
+.td-ball.loss,
+.td-ball.draw {
+    animation: haloPulse 2.2s ease-in-out infinite;
+}
+.td-ball.unplayed { opacity: 0.85; }
+
+@keyframes haloPulse {
+    0%, 100% { box-shadow: 0 0 5px 1px var(--halo); }
+    50% { box-shadow: 0 0 12px 4px var(--halo); }
+}
+
+/* Knocked out: a red cross struck through the last match they played. */
+.td-ball.knocked-out::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background:
+        linear-gradient(45deg, transparent calc(50% - 1.6px), #e2342a calc(50% - 1.6px), #e2342a calc(50% + 1.6px), transparent calc(50% + 1.6px)),
+        linear-gradient(-45deg, transparent calc(50% - 1.6px), #e2342a calc(50% - 1.6px), #e2342a calc(50% + 1.6px), transparent calc(50% + 1.6px));
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
+    animation: knockoutStrike 0.45s ease-out both;
+}
+
+@keyframes knockoutStrike {
+    0% { transform: scale(1.6); opacity: 0; }
+    60% { transform: scale(0.92); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .td-ball.win,
+    .td-ball.loss,
+    .td-ball.draw { animation: none; box-shadow: 0 0 8px 2px var(--halo); }
+    .td-ball.knocked-out::after { animation: none; }
+}
 .td-result { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
 .td-score { font-weight: 700; font-size: 1.05rem; color: var(--text-primary); white-space: nowrap; }
 .td-ko { font-weight: 700; color: var(--text-secondary); }
