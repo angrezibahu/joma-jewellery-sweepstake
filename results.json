@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-19T02:16:05Z",
+  "updatedAt": "2026-06-19T06:19:47Z",
   "results": {
     "1": {
       "match": 1,
@@ -359,11 +359,11 @@
       "away": "South Korea",
       "homeRef": "Mexico",
       "awayRef": "South Korea",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "FINISHED",
+      "winner": "Mexico",
+      "finishedAt": "2026-06-19T06:19:47Z"
     },
     "29": {
       "match": 29,

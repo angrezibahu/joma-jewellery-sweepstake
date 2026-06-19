@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-19T02:16:05Z",
+  "updatedAt": "2026-06-19T06:19:47Z",
   "source": "auto",
   "eliminated": [],
   "stages": {
@@ -56,25 +56,25 @@
     "A": [
       {
         "team": "Mexico",
-        "played": 1,
-        "won": 1,
+        "played": 2,
+        "won": 2,
         "drawn": 0,
         "lost": 0,
-        "gf": 2,
+        "gf": 3,
         "ga": 0,
-        "gd": 2,
-        "pts": 3,
+        "gd": 3,
+        "pts": 6,
         "rank": 1
       },
       {
         "team": "South Korea",
-        "played": 1,
+        "played": 2,
         "won": 1,
         "drawn": 0,
-        "lost": 0,
+        "lost": 1,
         "gf": 2,
-        "ga": 1,
-        "gd": 1,
+        "ga": 2,
+        "gd": 0,
         "pts": 3,
         "rank": 2
       },
