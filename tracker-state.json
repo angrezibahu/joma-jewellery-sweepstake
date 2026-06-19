@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-18T23:17:35Z",
+  "updatedAt": "2026-06-19T02:16:05Z",
   "source": "auto",
   "eliminated": [],
   "stages": {
@@ -105,6 +105,18 @@
     ],
     "B": [
       {
+        "team": "Canada",
+        "played": 2,
+        "won": 1,
+        "drawn": 1,
+        "lost": 0,
+        "gf": 7,
+        "ga": 1,
+        "gd": 6,
+        "pts": 4,
+        "rank": 1
+      },
+      {
         "team": "Switzerland",
         "played": 2,
         "won": 1,
@@ -114,31 +126,7 @@
         "ga": 2,
         "gd": 3,
         "pts": 4,
-        "rank": 1
-      },
-      {
-        "team": "Qatar",
-        "played": 1,
-        "won": 0,
-        "drawn": 1,
-        "lost": 0,
-        "gf": 1,
-        "ga": 1,
-        "gd": 0,
-        "pts": 1,
         "rank": 2
-      },
-      {
-        "team": "Canada",
-        "played": 1,
-        "won": 0,
-        "drawn": 1,
-        "lost": 0,
-        "gf": 1,
-        "ga": 1,
-        "gd": 0,
-        "pts": 1,
-        "rank": 3
       },
       {
         "team": "Bosnia and Herzegovina",
@@ -149,6 +137,18 @@
         "gf": 2,
         "ga": 5,
         "gd": -3,
+        "pts": 1,
+        "rank": 3
+      },
+      {
+        "team": "Qatar",
+        "played": 2,
+        "won": 0,
+        "drawn": 1,
+        "lost": 1,
+        "gf": 1,
+        "ga": 7,
+        "gd": -6,
         "pts": 1,
         "rank": 4
       }

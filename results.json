@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-18T23:17:35Z",
+  "updatedAt": "2026-06-19T02:16:05Z",
   "results": {
     "1": {
       "match": 1,
@@ -346,11 +346,11 @@
       "away": "Qatar",
       "homeRef": "Canada",
       "awayRef": "Qatar",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 6,
+      "awayScore": 0,
+      "status": "FINISHED",
+      "winner": "Canada",
+      "finishedAt": "2026-06-19T02:16:05Z"
     },
     "28": {
       "match": 28,
