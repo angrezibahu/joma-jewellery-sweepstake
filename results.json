@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-20T08:31:51Z",
+  "updatedAt": "2026-06-20T22:06:44Z",
   "results": {
     "1": {
       "match": 1,
@@ -424,11 +424,11 @@
       "away": "Sweden",
       "homeRef": "Netherlands",
       "awayRef": "Sweden",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 5,
+      "awayScore": 1,
+      "status": "FINISHED",
+      "winner": "Netherlands",
+      "finishedAt": "2026-06-20T22:06:44Z"
     },
     "34": {
       "match": 34,
