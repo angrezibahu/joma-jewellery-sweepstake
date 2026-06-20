@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-20T04:50:30Z",
+  "updatedAt": "2026-06-20T08:31:51Z",
   "results": {
     "1": {
       "match": 1,
@@ -411,11 +411,11 @@
       "away": "Paraguay",
       "homeRef": "Türkiye",
       "awayRef": "Paraguay",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 0,
+      "awayScore": 1,
+      "status": "FINISHED",
+      "winner": "Paraguay",
+      "finishedAt": "2026-06-20T08:31:51Z"
     },
     "33": {
       "match": 33,
