@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-21T00:06:05Z",
+  "updatedAt": "2026-06-21T06:01:13Z",
   "results": {
     "1": {
       "match": 1,
@@ -450,11 +450,11 @@
       "away": "Curaçao",
       "homeRef": "Ecuador",
       "awayRef": "Curaçao",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "FINISHED",
       "winner": null,
-      "finishedAt": null
+      "finishedAt": "2026-06-21T06:01:13Z"
     },
     "36": {
       "match": 36,

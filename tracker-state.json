@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-21T00:06:05Z",
+  "updatedAt": "2026-06-21T06:01:13Z",
   "source": "auto",
   "eliminated": [],
   "stages": {
@@ -280,26 +280,26 @@
       },
       {
         "team": "Ecuador",
-        "played": 1,
+        "played": 2,
         "won": 0,
-        "drawn": 0,
+        "drawn": 1,
         "lost": 1,
         "gf": 0,
         "ga": 1,
         "gd": -1,
-        "pts": 0,
+        "pts": 1,
         "rank": 3
       },
       {
         "team": "Curaçao",
-        "played": 1,
+        "played": 2,
         "won": 0,
-        "drawn": 0,
+        "drawn": 1,
         "lost": 1,
         "gf": 1,
         "ga": 7,
         "gd": -6,
-        "pts": 0,
+        "pts": 1,
         "rank": 4
       }
     ],
