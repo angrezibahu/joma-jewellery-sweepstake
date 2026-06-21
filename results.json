@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-21T06:01:13Z",
+  "updatedAt": "2026-06-21T10:29:18Z",
   "results": {
     "1": {
       "match": 1,
@@ -463,11 +463,11 @@
       "away": "Japan",
       "homeRef": "Tunisia",
       "awayRef": "Japan",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 0,
+      "awayScore": 4,
+      "status": "FINISHED",
+      "winner": "Japan",
+      "finishedAt": "2026-06-21T10:29:18Z"
     },
     "37": {
       "match": 37,
