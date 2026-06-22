@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-21T23:12:31Z",
+  "updatedAt": "2026-06-22T02:01:38Z",
   "results": {
     "1": {
       "match": 1,
@@ -502,11 +502,11 @@
       "away": "Cape Verde",
       "homeRef": "Uruguay",
       "awayRef": "Cape Verde",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
+      "homeScore": 2,
+      "awayScore": 2,
+      "status": "FINISHED",
       "winner": null,
-      "finishedAt": null
+      "finishedAt": "2026-06-22T02:01:38Z"
     },
     "40": {
       "match": 40,
