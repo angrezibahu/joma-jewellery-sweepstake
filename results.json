@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-22T08:37:23Z",
+  "updatedAt": "2026-06-22T21:37:49Z",
   "results": {
     "1": {
       "match": 1,
@@ -528,11 +528,11 @@
       "away": "Austria",
       "homeRef": "Argentina",
       "awayRef": "Austria",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 2,
+      "awayScore": 0,
+      "status": "FINISHED",
+      "winner": "Argentina",
+      "finishedAt": "2026-06-22T21:37:49Z"
     },
     "42": {
       "match": 42,
