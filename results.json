@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-22T02:01:38Z",
+  "updatedAt": "2026-06-22T08:37:23Z",
   "results": {
     "1": {
       "match": 1,
@@ -515,11 +515,11 @@
       "away": "Egypt",
       "homeRef": "New Zealand",
       "awayRef": "Egypt",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 1,
+      "awayScore": 3,
+      "status": "FINISHED",
+      "winner": "Egypt",
+      "finishedAt": "2026-06-22T08:37:23Z"
     },
     "41": {
       "match": 41,
