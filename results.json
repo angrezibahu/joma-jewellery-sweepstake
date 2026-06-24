@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-24T01:24:41Z",
+  "updatedAt": "2026-06-24T04:07:28Z",
   "results": {
     "1": {
       "match": 1,
@@ -606,11 +606,11 @@
       "away": "Croatia",
       "homeRef": "Panama",
       "awayRef": "Croatia",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 0,
+      "awayScore": 1,
+      "status": "FINISHED",
+      "winner": "Croatia",
+      "finishedAt": "2026-06-24T04:07:28Z"
     },
     "48": {
       "match": 48,

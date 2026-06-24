@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-24T01:24:41Z",
+  "updatedAt": "2026-06-24T04:07:28Z",
   "source": "auto",
   "eliminated": [],
   "stages": {
@@ -629,25 +629,25 @@
         "rank": 2
       },
       {
-        "team": "Panama",
-        "played": 1,
-        "won": 0,
+        "team": "Croatia",
+        "played": 2,
+        "won": 1,
         "drawn": 0,
         "lost": 1,
-        "gf": 0,
-        "ga": 1,
+        "gf": 3,
+        "ga": 4,
         "gd": -1,
-        "pts": 0,
+        "pts": 3,
         "rank": 3
       },
       {
-        "team": "Croatia",
-        "played": 1,
+        "team": "Panama",
+        "played": 2,
         "won": 0,
         "drawn": 0,
-        "lost": 1,
-        "gf": 2,
-        "ga": 4,
+        "lost": 2,
+        "gf": 0,
+        "ga": 2,
         "gd": -2,
         "pts": 0,
         "rank": 4
