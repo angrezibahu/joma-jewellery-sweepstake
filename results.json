@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-24T04:07:28Z",
+  "updatedAt": "2026-06-24T08:21:08Z",
   "results": {
     "1": {
       "match": 1,
@@ -619,11 +619,11 @@
       "away": "DR Congo",
       "homeRef": "Colombia",
       "awayRef": "DR Congo",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "FINISHED",
+      "winner": "Colombia",
+      "finishedAt": "2026-06-24T08:21:08Z"
     },
     "49": {
       "match": 49,
