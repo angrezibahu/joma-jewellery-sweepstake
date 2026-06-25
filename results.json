@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-25T03:32:51Z",
+  "updatedAt": "2026-06-25T07:41:40Z",
   "results": {
     "1": {
       "match": 1,
@@ -684,11 +684,11 @@
       "away": "Mexico",
       "homeRef": "Czechia",
       "awayRef": "Mexico",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 0,
+      "awayScore": 3,
+      "status": "FINISHED",
+      "winner": "Mexico",
+      "finishedAt": "2026-06-25T07:41:40Z"
     },
     "54": {
       "match": 54,
@@ -697,11 +697,11 @@
       "away": "South Korea",
       "homeRef": "South Africa",
       "awayRef": "South Korea",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "FINISHED",
+      "winner": "South Africa",
+      "finishedAt": "2026-06-25T07:41:40Z"
     },
     "55": {
       "match": 55,
@@ -940,7 +940,7 @@
     "73": {
       "match": 73,
       "stage": "r32",
-      "home": null,
+      "home": "South Africa",
       "away": "Canada",
       "homeRef": "2A",
       "awayRef": "2B",
@@ -1018,7 +1018,7 @@
     "79": {
       "match": 79,
       "stage": "r32",
-      "home": null,
+      "home": "Mexico",
       "away": null,
       "homeRef": "1A",
       "awayRef": "3C/E/F/H/I",
