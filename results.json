@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-26T03:40:22Z",
+  "updatedAt": "2026-06-26T06:34:38Z",
   "results": {
     "1": {
       "match": 1,
@@ -762,11 +762,11 @@
       "away": "United States",
       "homeRef": "Türkiye",
       "awayRef": "United States",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 3,
+      "awayScore": 2,
+      "status": "FINISHED",
+      "winner": "Türkiye",
+      "finishedAt": "2026-06-26T06:34:38Z"
     },
     "60": {
       "match": 60,
@@ -775,11 +775,11 @@
       "away": "Australia",
       "homeRef": "Paraguay",
       "awayRef": "Australia",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "FINISHED",
       "winner": null,
-      "finishedAt": null
+      "finishedAt": "2026-06-26T06:34:38Z"
     },
     "61": {
       "match": 61,
@@ -1057,7 +1057,7 @@
     "82": {
       "match": 82,
       "stage": "r32",
-      "home": null,
+      "home": "United States",
       "away": null,
       "homeRef": "1D",
       "awayRef": "3B/E/F/I/J",
@@ -1109,7 +1109,7 @@
     "86": {
       "match": 86,
       "stage": "r32",
-      "home": null,
+      "home": "Australia",
       "away": null,
       "homeRef": "2D",
       "awayRef": "2G",
