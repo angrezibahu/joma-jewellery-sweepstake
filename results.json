@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-26T01:36:18Z",
+  "updatedAt": "2026-06-26T03:40:22Z",
   "results": {
     "1": {
       "match": 1,
@@ -736,11 +736,11 @@
       "away": "Sweden",
       "homeRef": "Japan",
       "awayRef": "Sweden",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
+      "homeScore": 1,
+      "awayScore": 1,
+      "status": "FINISHED",
       "winner": null,
-      "finishedAt": null
+      "finishedAt": "2026-06-26T03:40:22Z"
     },
     "58": {
       "match": 58,
@@ -749,11 +749,11 @@
       "away": "Netherlands",
       "homeRef": "Tunisia",
       "awayRef": "Netherlands",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 1,
+      "awayScore": 3,
+      "status": "FINISHED",
+      "winner": "Netherlands",
+      "finishedAt": "2026-06-26T03:40:22Z"
     },
     "59": {
       "match": 59,
@@ -954,7 +954,7 @@
       "match": 74,
       "stage": "r32",
       "home": "Brazil",
-      "away": null,
+      "away": "Japan",
       "homeRef": "1C",
       "awayRef": "2F",
       "homeScore": null,
@@ -979,7 +979,7 @@
     "76": {
       "match": 76,
       "stage": "r32",
-      "home": null,
+      "home": "Netherlands",
       "away": "Morocco",
       "homeRef": "1F",
       "awayRef": "2C",
