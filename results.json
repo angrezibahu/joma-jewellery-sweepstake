@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-28T01:33:25Z",
+  "updatedAt": "2026-06-28T05:16:19Z",
   "results": {
     "1": {
       "match": 1,
@@ -892,11 +892,11 @@
       "away": "Uzbekistan",
       "homeRef": "DR Congo",
       "awayRef": "Uzbekistan",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 3,
+      "awayScore": 1,
+      "status": "FINISHED",
+      "winner": "DR Congo",
+      "finishedAt": "2026-06-28T05:16:19Z"
     },
     "70": {
       "match": 70,
@@ -905,11 +905,11 @@
       "away": "Portugal",
       "homeRef": "Colombia",
       "awayRef": "Portugal",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "FINISHED",
       "winner": null,
-      "finishedAt": null
+      "finishedAt": "2026-06-28T05:16:19Z"
     },
     "71": {
       "match": 71,
@@ -1083,7 +1083,7 @@
     "84": {
       "match": 84,
       "stage": "r32",
-      "home": null,
+      "home": "Portugal",
       "away": "Croatia",
       "homeRef": "2K",
       "awayRef": "2L",
@@ -1135,7 +1135,7 @@
     "88": {
       "match": 88,
       "stage": "r32",
-      "home": null,
+      "home": "Colombia",
       "away": null,
       "homeRef": "1K",
       "awayRef": "3D/E/I/J/L",

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-28T01:33:25Z",
+  "updatedAt": "2026-06-28T05:16:19Z",
   "source": "auto",
   "eliminated": [
     "Curaçao",
@@ -11,7 +11,8 @@
     "Qatar",
     "Saudi Arabia",
     "Tunisia",
-    "Türkiye"
+    "Türkiye",
+    "Uzbekistan"
   ],
   "stages": {
     "Algeria": "groups",
@@ -23,7 +24,7 @@
     "Brazil": "r32",
     "Canada": "r32",
     "Cape Verde": "r32",
-    "Colombia": "groups",
+    "Colombia": "r32",
     "Croatia": "r32",
     "Curaçao": "groups",
     "Czechia": "groups",
@@ -47,7 +48,7 @@
     "Norway": "r32",
     "Panama": "groups",
     "Paraguay": "groups",
-    "Portugal": "groups",
+    "Portugal": "r32",
     "Qatar": "groups",
     "Saudi Arabia": "groups",
     "Scotland": "groups",
@@ -567,49 +568,49 @@
     "K": [
       {
         "team": "Colombia",
-        "played": 2,
+        "played": 3,
         "won": 2,
-        "drawn": 0,
+        "drawn": 1,
         "lost": 0,
         "gf": 4,
         "ga": 1,
         "gd": 3,
-        "pts": 6,
+        "pts": 7,
         "rank": 1
       },
       {
         "team": "Portugal",
-        "played": 2,
+        "played": 3,
         "won": 1,
-        "drawn": 1,
+        "drawn": 2,
         "lost": 0,
         "gf": 6,
         "ga": 1,
         "gd": 5,
-        "pts": 4,
+        "pts": 5,
         "rank": 2
       },
       {
         "team": "DR Congo",
-        "played": 2,
-        "won": 0,
+        "played": 3,
+        "won": 1,
         "drawn": 1,
         "lost": 1,
-        "gf": 1,
-        "ga": 2,
-        "gd": -1,
-        "pts": 1,
+        "gf": 4,
+        "ga": 3,
+        "gd": 1,
+        "pts": 4,
         "rank": 3
       },
       {
         "team": "Uzbekistan",
-        "played": 2,
+        "played": 3,
         "won": 0,
         "drawn": 0,
-        "lost": 2,
-        "gf": 1,
-        "ga": 8,
-        "gd": -7,
+        "lost": 3,
+        "gf": 2,
+        "ga": 11,
+        "gd": -9,
         "pts": 0,
         "rank": 4
       }
