@@ -164,6 +164,7 @@ def fetch_openfootball_matches():
         if final is None:
             continue  # not played yet (or unparseable)
         h, a = final
+        pens = None
         if h > a:
             winner = "HOME_TEAM"
         elif a > h:
@@ -174,16 +175,43 @@ def fetch_openfootball_matches():
                 winner = "HOME_TEAM" if pens[0] > pens[1] else "AWAY_TEAM"
             else:
                 winner = "DRAW"  # genuine group-stage draw
+                pens = None
         out.append({
             "home": m.get("team1"),
             "away": m.get("team2"),
             "homeScore": h,
             "awayScore": a,
             "winner": winner,
+            "pens": pens,  # (home, away) shootout score, only on a knockout draw
             "utcDate": m.get("date"),
         })
     print(f"openfootball returned {len(out)} finished match(es).")
     return out
+
+
+def fetch_openfootball_ko_pairs():
+    """Return {team1: team2, team2: team1} for every Round-of-32 fixture the feed
+    lists, played or not.
+
+    The eight best third-placed teams are sent to specific R32 slots by a fixed
+    official table. Our schedule only records the *set* of groups allowed in each
+    slot (e.g. "3A/B/C/D/F"), which several valid permutations can satisfy - so a
+    blind assignment can pair a third-placed team with the wrong opponent, and the
+    feed's real result for that team then never matches our fixture. The feed
+    already publishes the actual pairings, so we use them to pin each third-placed
+    team to the exact slot the official bracket uses."""
+    data = _http_json(OPENFOOTBALL_URL)
+    pairs = {}
+    if not data:
+        return pairs
+    for m in data.get("matches", []):
+        if (m.get("round") or "") != "Round of 32":
+            continue
+        t1, t2 = m.get("team1"), m.get("team2")
+        if t1 and t2:
+            pairs[t1] = t2
+            pairs[t2] = t1
+    return pairs
 
 
 def fetch_api_matches():
@@ -232,17 +260,39 @@ def _index_by_pair(feed, valid, idx, override=True):
     return idx
 
 
-def apply_results(schedule, results):
-    """Fill results.json for any due match: manual file, then openfootball, then API."""
+def valid_teams(schedule):
+    """The canonical names of every team that appears as a concrete (non-placeholder)
+    side anywhere in the schedule."""
     valid = {m["home"] for m in schedule if not m["homePlaceholder"]}
     valid |= {m["away"] for m in schedule if not m["awayPlaceholder"]}
+    return valid
 
-    # Primary feed: openfootball (free, no token). football-data.org only fills
-    # matches openfootball hasn't published yet, so it never overrides it.
+
+def build_feed_idx(valid):
+    """Index every finished feed match by the frozenset of its two team names.
+
+    Primary feed: openfootball (free, no token). football-data.org only fills
+    matches openfootball hasn't published yet, so it never overrides it."""
     feed_idx = {}
     _index_by_pair(fetch_openfootball_matches(), valid, feed_idx)
     _index_by_pair(fetch_api_matches(), valid, feed_idx, override=False)
+    return feed_idx
 
+
+def canonical_pairs(raw_pairs, valid):
+    """Map a feed {team: opponent} dict onto canonical schedule names, dropping any
+    pair whose names we can't resolve (e.g. unplayed-round placeholders)."""
+    out = {}
+    for a, b in raw_pairs.items():
+        ca, cb = canon(a, valid), canon(b, valid)
+        if ca and cb:
+            out[ca] = cb
+    return out
+
+
+def apply_results(schedule, results, feed_idx):
+    """Fill results.json for any due match: manual file first, then the live feed."""
+    valid = valid_teams(schedule)
     manual = load(MANUAL, {}) or {}
     now = now_utc()
     changed = 0
@@ -251,6 +301,17 @@ def apply_results(schedule, results):
         no = str(m["match"])
         rec = results["results"][no]
         if rec.get("status") == "FINISHED":
+            # Backfill a shootout score onto a knockout draw that was recorded
+            # before we tracked penalties, so the site can show how it was decided.
+            if (rec.get("winner") and rec.get("homeScore") is not None
+                    and rec["homeScore"] == rec["awayScore"]
+                    and rec.get("penaltyHome") is None
+                    and rec.get("home") and rec.get("away")):
+                a = feed_idx.get(frozenset((rec["home"], rec["away"])))
+                if a and a.get("pens"):
+                    p = a["pens"]
+                    flip = canon(a["home"], valid) != rec["home"]
+                    rec["penaltyHome"], rec["penaltyAway"] = (p[1], p[0]) if flip else (p[0], p[1])
             continue
         due = parse_iso(m["resultsDueUTC"])
         if now < due:
@@ -273,20 +334,25 @@ def apply_results(schedule, results):
             a = feed_idx.get(frozenset((home, away)))
             if a:
                 if canon(a["home"], valid) == home:
-                    _set_result(rec, a["homeScore"], a["awayScore"], a.get("winner"))
+                    _set_result(rec, a["homeScore"], a["awayScore"], a.get("winner"),
+                                pens=a.get("pens"))
                 else:
-                    _set_result(rec, a["awayScore"], a["homeScore"], a.get("winner"), flip=True)
+                    _set_result(rec, a["awayScore"], a["homeScore"], a.get("winner"),
+                                flip=True, pens=a.get("pens"))
                 changed += 1
 
     print(f"Updated {changed} match result(s).")
     return changed
 
 
-def _set_result(rec, home_score, away_score, api_winner=None, flip=False):
+def _set_result(rec, home_score, away_score, api_winner=None, flip=False, pens=None):
     rec["homeScore"] = home_score
     rec["awayScore"] = away_score
     rec["status"] = "FINISHED"
     rec["finishedAt"] = now_utc().strftime("%Y-%m-%dT%H:%M:%SZ")
+    # default: clear any stale shootout score; set below only on a knockout draw
+    rec.pop("penaltyHome", None)
+    rec.pop("penaltyAway", None)
     if home_score > away_score:
         rec["winner"] = rec.get("home")
     elif away_score > home_score:
@@ -296,6 +362,11 @@ def _set_result(rec, home_score, away_score, api_winner=None, flip=False):
         if api_winner in ("HOME_TEAM", "AWAY_TEAM"):
             home_is = (api_winner == "HOME_TEAM") ^ flip
             rec["winner"] = rec.get("home") if home_is else rec.get("away")
+            # record the shootout score in this match's home-away orientation
+            if pens:
+                ph, pa = (pens[1], pens[0]) if flip else (pens[0], pens[1])
+                rec["penaltyHome"] = ph
+                rec["penaltyAway"] = pa
         else:
             rec["winner"] = None  # genuine group-stage draw
 
@@ -345,14 +416,27 @@ def group_table(schedule, results, group):
     return order
 
 
-def assign_thirds(third_slots, qualified_thirds):
-    """Backtracking match: assign each R32 third-place slot a qualifying team
-    whose group is in that slot's allowed set. Returns {matchNo: team} or {}."""
+def assign_thirds(third_slots, qualified_thirds, forced=None):
+    """Assign each R32 third-place slot a qualifying team whose group is in that
+    slot's allowed set. Returns {matchNo: team} or {}.
+
+    `forced` ({matchNo: team}) pins slots whose opponent the feed has already told
+    us - those are the official pairings, so we lock them in and only backtrack to
+    fill whatever the feed hasn't published yet."""
     by_group = {t["group"]: t["team"] for t in qualified_thirds}
-    slots = sorted(third_slots, key=lambda s: len(s["allowed"]))  # most-constrained first
+    group_of = {t["team"]: t["group"] for t in qualified_thirds}
+    forced = forced or {}
 
     result = {}
     used = set()
+    for mno, team in forced.items():
+        if team in group_of:
+            result[mno] = team
+            used.add(group_of[team])
+
+    # most-constrained first; skip slots the feed already pinned
+    slots = sorted((s for s in third_slots if s["match"] not in result),
+                   key=lambda s: len(s["allowed"]))
 
     def bt(i):
         if i == len(slots):
@@ -371,7 +455,8 @@ def assign_thirds(third_slots, qualified_thirds):
     return result if bt(0) else {}
 
 
-def derive_state(schedule, results, prev):
+def derive_state(schedule, results, prev, ko_pairs=None):
+    ko_pairs = ko_pairs or {}
     by_no = {m["match"]: m for m in schedule}
     teams = sorted({m["home"] for m in schedule if not m["homePlaceholder"]} |
                    {m["away"] for m in schedule if not m["awayPlaceholder"]})
@@ -416,7 +501,32 @@ def derive_state(schedule, results, prev):
             if m["stage"] == "r32" and m["homePlaceholder"] and m["home"].startswith("3"):
                 allowed = m["home"][1:].split("/")
                 slots.append({"match": m["match"], "allowed": allowed, "side": "home"})
-        third_team = assign_thirds(slots, qualified_thirds)
+
+        # Pin slots whose opponent the feed already names: the third-placed team is
+        # whoever the feed pairs with this slot's (deterministic) seeded side. This
+        # locks in the official bracket where a blind permutation could pick a
+        # different-but-valid one and strand the feed's real result.
+        group_of_third = {t["team"]: t["group"] for t in qualified_thirds}
+        forced = {}
+        for s in slots:
+            m = by_no[s["match"]]
+            seeded_ref = m["away"] if s.get("side") == "home" else m["home"]
+            seeded_team = qualifiers.get(seeded_ref)
+            opp = ko_pairs.get(seeded_team) if seeded_team else None
+            if opp in group_of_third and group_of_third[opp] in s["allowed"]:
+                forced[s["match"]] = opp
+        third_team = assign_thirds(slots, qualified_thirds, forced)
+
+        # Repair any slot we previously guessed wrong: a third-placed side filled in
+        # by an earlier (feed-blind) run can be parked against the wrong opponent, so
+        # its real result never matches. Overwrite from the feed-pinned assignment,
+        # but never touch a tie that has already kicked off.
+        for mno, team in forced.items():
+            m = by_no[mno]
+            rec = results["results"][str(mno)]
+            side = "home" if (m["homePlaceholder"] and str(m["home"]).startswith("3")) else "away"
+            if rec.get("status") != "FINISHED" and rec.get(side) != team:
+                rec[side] = team
 
     # ---- Knockout propagation (iterate to a fixed point) ----
     KO_NEXT_STAGE = {"r32": "r16", "r16": "qf", "qf": "sf", "sf": "final", "final": "winner"}
@@ -502,21 +612,33 @@ def main():
     results = load(RESULTS)
     prev_state = load(STATE, {})
 
-    changed = apply_results(schedule, results)
+    # Snapshot the whole results map up front; any change at all (new score, or a
+    # knockout/third-place team resolved or repaired) means we persist.
+    before = json.dumps(results["results"], sort_keys=True, ensure_ascii=False)
 
-    # Snapshot home/away for all fixtures before derive_state resolves KO placeholders.
-    pre_derive = {no: (rec.get("home"), rec.get("away"))
-                  for no, rec in results["results"].items()}
+    # Fetch the feed once, then reuse it across the loop below.
+    valid = valid_teams(schedule)
+    feed_idx = build_feed_idx(valid)
+    ko_pairs = canonical_pairs(fetch_openfootball_ko_pairs(), valid)
 
-    # derive_state also fills concrete teams into knockout fixtures as earlier
-    # rounds finish, so persist results.json after deriving to keep them.
-    state = derive_state(schedule, results, prev_state)
+    # Filling a knockout score lets derive_state resolve the next round's teams,
+    # which can make a further feed result matchable - and repairing a mis-pinned
+    # third-place slot unblocks a result that never matched its old opponent. So
+    # alternate apply/derive until nothing new lands (bounded by bracket depth).
+    changed = 0
+    state = None
+    for _ in range(6):
+        snapshot = json.dumps(results["results"], sort_keys=True, ensure_ascii=False)
+        c = apply_results(schedule, results, feed_idx)
+        changed += c
+        state = derive_state(schedule, results, prev_state, ko_pairs)
+        # Stop once a full apply+derive pass leaves results untouched - that covers
+        # both "no new score" and "no team resolved/repaired this pass".
+        if json.dumps(results["results"], sort_keys=True, ensure_ascii=False) == snapshot:
+            break
 
-    post_derive = {no: (rec.get("home"), rec.get("away"))
-                   for no, rec in results["results"].items()}
-    ko_changed = post_derive != pre_derive
-
-    if changed or ko_changed:
+    after = json.dumps(results["results"], sort_keys=True, ensure_ascii=False)
+    if after != before:
         results["updatedAt"] = now_utc().strftime("%Y-%m-%dT%H:%M:%SZ")
         dump(RESULTS, results)
         dump(STATE, state)

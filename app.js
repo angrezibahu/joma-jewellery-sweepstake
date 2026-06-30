@@ -408,11 +408,18 @@ function renderFixtures() {
             const home = fixtureSide(m, "home");
             const away = fixtureSide(m, "away");
 
+            // A knockout tie level after 90'/extra time is settled on penalties:
+            // the score is a draw but there's still a winner to show.
+            const shootout = finished && rec.winner
+                && rec.homeScore != null
+                && Number(rec.homeScore) === Number(rec.awayScore);
+
             let middle, statusClass;
             if (finished && rec.homeScore != null) {
                 // Coerce to numbers: results.json is machine-written from an
                 // external feed, so never trust it as HTML.
-                middle = `<span class="fx-score">${Number(rec.homeScore)} – ${Number(rec.awayScore)}</span>`;
+                middle = `<span class="fx-score">${Number(rec.homeScore)} – ${Number(rec.awayScore)}</span>`
+                    + (shootout ? `<span class="fx-pens">pens</span>` : "");
                 statusClass = "done";
             } else if (due) {
                 middle = `<span class="fx-vs">v</span>`;
@@ -425,9 +432,18 @@ function renderFixtures() {
             const tag = m.stage === "group"
                 ? `Group ${escapeHtml(m.group)}`
                 : (STAGE_LABEL_LONG[m.stage] || escapeHtml(m.stage));
-            const note = finished ? "Full time"
-                : due ? "Awaiting result"
-                : `${m.ukTime} BST`;
+            let note;
+            if (shootout) {
+                // Show the shootout from the winner's side (higher score first).
+                const ph = Number(rec.penaltyHome), pa = Number(rec.penaltyAway);
+                const pens = Number.isFinite(ph) && Number.isFinite(pa)
+                    ? ` ${Math.max(ph, pa)}–${Math.min(ph, pa)}` : "";
+                note = `${escapeHtml(rec.winner)} win${pens} on penalties`;
+            } else {
+                note = finished ? "Full time"
+                    : due ? "Awaiting result"
+                    : `${m.ukTime} BST`;
+            }
 
             const sideAttrs = (s, sideName) => {
                 const cls = `fx-side ${sideName}${s.name ? ' is-clickable' : ''}`;

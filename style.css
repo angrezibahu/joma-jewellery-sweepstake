@@ -1421,6 +1421,15 @@ footer .small {
 }
 .fx-mid { text-align: center; min-width: 56px; }
 .fx-score { font-size: 1.25rem; font-weight: 700; color: var(--gold); white-space: nowrap; }
+.fx-pens {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 0.05rem;
+}
 .fx-vs { color: var(--text-muted); font-weight: 600; }
 .fx-ko { font-weight: 700; color: var(--text-secondary); }
 .fx-foot {

@@ -69,6 +69,26 @@ score as `"home-away"` from the home team's perspective:
 result decides who progresses; for a hand-entered knockout score, enter the score
 that reflects the actual decisive result.)
 
+## Third-placed teams in the Round of 32
+
+Eight of the twelve third-placed teams advance, and each is sent to a specific
+R32 slot by a fixed official table. `schedule.json` only records the *set* of
+groups each slot allows (e.g. `3A/B/C/D/F`), and several different assignments can
+satisfy those sets at once — so picking one blindly can pair a third-placed team
+with the wrong opponent. When that happens, the feed's real result for that team
+never matches our fixture and it stays stuck on *"Awaiting result"*.
+
+To avoid this, the engine reads the feed's actual R32 pairings and pins each
+third-placed team to the slot whose seeded side the feed lists as its opponent.
+A slot already filled in (against the wrong team) by an earlier, feed-blind run is
+repaired the same way, as long as it hasn't kicked off yet.
+
+## Penalty shootouts
+
+For a knockout tie level after 90'/extra time, the engine records the shootout
+score (`penaltyHome`/`penaltyAway`) alongside the `winner`, and the fixtures list
+shows e.g. *"Paraguay win 4–3 on penalties"* under the level full-time score.
+
 ## A note on tiebreakers
 
 Group ranking uses the primary FIFA criteria: points, then goal difference, then
