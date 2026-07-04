@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T04:07:37Z",
+  "updatedAt": "2026-07-04T07:19:35Z",
   "source": "auto",
   "eliminated": [
     "Algeria",
@@ -13,6 +13,7 @@
     "DR Congo",
     "Ecuador",
     "Germany",
+    "Ghana",
     "Haiti",
     "IR Iran",
     "Iraq",
@@ -44,7 +45,7 @@
     "Brazil": "r16",
     "Canada": "r16",
     "Cape Verde": "r32",
-    "Colombia": "r32",
+    "Colombia": "r16",
     "Croatia": "r32",
     "Curaçao": "groups",
     "Czechia": "groups",

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T04:07:37Z",
+  "updatedAt": "2026-07-04T07:19:35Z",
   "results": {
     "1": {
       "match": 1,
@@ -1145,11 +1145,11 @@
       "away": "Ghana",
       "homeRef": "1K",
       "awayRef": "3D/E/I/J/L",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "FINISHED",
+      "winner": "Colombia",
+      "finishedAt": "2026-07-04T07:19:35Z"
     },
     "89": {
       "match": 89,
@@ -1233,7 +1233,7 @@
       "match": 95,
       "stage": "r16",
       "home": "Egypt",
-      "away": null,
+      "away": "Colombia",
       "homeRef": "W86",
       "awayRef": "W88",
       "homeScore": null,
