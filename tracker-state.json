@@ -1,8 +1,9 @@
 {
-  "updatedAt": "2026-07-19T03:33:07Z",
+  "updatedAt": "2026-07-19T23:15:41Z",
   "source": "auto",
   "eliminated": [
     "Algeria",
+    "Argentina",
     "Australia",
     "Austria",
     "Belgium",
@@ -90,7 +91,7 @@
     "Senegal": "r32",
     "South Africa": "r32",
     "South Korea": "groups",
-    "Spain": "final",
+    "Spain": "winner",
     "Sweden": "r32",
     "Switzerland": "qf",
     "Tunisia": "groups",

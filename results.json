@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-19T03:33:07Z",
+  "updatedAt": "2026-07-19T23:15:41Z",
   "results": {
     "1": {
       "match": 1,
@@ -1355,11 +1355,11 @@
       "away": "Argentina",
       "homeRef": "W101",
       "awayRef": "W102",
-      "homeScore": null,
-      "awayScore": null,
-      "status": "SCHEDULED",
-      "winner": null,
-      "finishedAt": null
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "FINISHED",
+      "winner": "Spain",
+      "finishedAt": "2026-07-19T23:15:41Z"
     }
   }
 }
